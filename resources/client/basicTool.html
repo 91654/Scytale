@@ -36,9 +36,7 @@
             document.getElementById("textTable").innerHTML = "<table id='text'></table>";
             let textData = "<tr><th>Ciphertext</th><th>Plaintext</th></tr>";
             for (item of text) {
-                textData += "<tr>";
-                textData += '<td>${item.ciphertext}</td><td>${item.plaintext}</td>';
-                textData += "</tr>";
+                textData += "<tr><td>" + item.ciphertext + "</td><td> <input type='text' name=" + item.plaintext + "</td></tr>";
             }
             fillTable(textData, "text");
         }
