@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        openDatabase("Challenges.db");                     //connect to our database file, when you stop the server the connection to the database
+        openDatabase("Scytale.db");                     //connect to our database file, when you stop the server the connection to the database
         // is closed and you can access it through SQLite Studio
 
         ResourceConfig config = new ResourceConfig();       // prepare our Jersey Servlet, 'Servlet' is a Java program that runs on a Java-enabled web servers.
@@ -40,18 +40,3 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public static void openDatabase(String dbFile) {
-        try {
-            SQLiteConfig config = new SQLiteConfig();
-            config.enforceForeignKeys(true);                //need this to cascade delete/update in database
-            Class.forName("org.sqlite.JDBC");
-            db = DriverManager.getConnection("jdbc:sqlite:resources/" + dbFile, config.toProperties());
-            System.out.println("Database connection successfully established.");
-        } catch (Exception exception) {
-            System.out.println("Database connection error: " + exception.getMessage());
-        }
-    }
-}
