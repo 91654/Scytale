@@ -40,3 +40,18 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static void openDatabase(String dbFile) {
+        try {
+            SQLiteConfig config = new SQLiteConfig();
+            config.enforceForeignKeys(true);                //need this to cascade delete/update in database
+            Class.forName("org.sqlite.JDBC");
+            db = DriverManager.getConnection("jdbc:sqlite:resources/" + dbFile, config.toProperties());
+            System.out.println("Database connection successfully established.");
+        } catch (Exception exception) {
+            System.out.println("Database connection error: " + exception.getMessage());
+        }
+    }
+}
