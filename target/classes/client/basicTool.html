@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BASIC CIPHER TOOL</title>
+    <script>
+        //Ciphertext and plaintext
+        let text = [
+            {ciphertext: "A", plaintext: ""},
+            {ciphertext: "B", plaintext: ""},
+            {ciphertext: "C", plaintext: ""},
+            {ciphertext: "D", plaintext: ""},
+            {ciphertext: "E", plaintext: ""},
+            {ciphertext: "F", plaintext: ""},
+            {ciphertext: "G", plaintext: ""},
+            {ciphertext: "H", plaintext: ""},
+            {ciphertext: "I", plaintext: ""},
+            {ciphertext: "J", plaintext: ""},
+            {ciphertext: "K", plaintext: ""},
+            {ciphertext: "L", plaintext: ""},
+            {ciphertext: "M", plaintext: ""},
+            {ciphertext: "N", plaintext: ""},
+            {ciphertext: "O", plaintext: ""},
+            {ciphertext: "P", plaintext: ""},
+            {ciphertext: "Q", plaintext: ""},
+            {ciphertext: "R", plaintext: ""},
+            {ciphertext: "T", plaintext: ""},
+            {ciphertext: "U", plaintext: ""},
+            {ciphertext: "V", plaintext: ""},
+            {ciphertext: "W", plaintext: ""},
+            {ciphertext: "X", plaintext: ""},
+            {ciphertext: "Y", plaintext: ""},
+            {ciphertext: "Z", plaintext: ""}
+        ];
+
+        //async function (program waits for data to be fetched)
+        let getData = async () => {
+            document.getElementById("textTable").innerHTML = "<table id='text'></table>";
+            let textData = "<tr><th>Ciphertext</th><th>Plaintext</th></tr>";
+            for (item of text) {
+                textData += "<tr><td>" + item.ciphertext + "</td><td> <input type='text' name=" + item.plaintext + "</td></tr>";
+            }
+            fillTable(textData, "text");
+        }
+
+        //fills table with data
+        let fillTable = (data, name) => {
+            let table = document.getElementById(name);
+            table.innerHTML = data;
+        }
+    </script>
+    
+</head>
+<body onload="getData()">
+
+<div id="textTable"></div>
+
+</body>
+</html>
