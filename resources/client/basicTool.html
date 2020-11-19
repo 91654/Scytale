@@ -4,56 +4,50 @@
     <meta charset="UTF-8">
     <title>BASIC CIPHER TOOL</title>
     <script>
-        //Ciphertext and plaintext
-        let text = [
-            {ciphertext: "A", plaintext: ""},
-            {ciphertext: "B", plaintext: ""},
-            {ciphertext: "C", plaintext: ""},
-            {ciphertext: "D", plaintext: ""},
-            {ciphertext: "E", plaintext: ""},
-            {ciphertext: "F", plaintext: ""},
-            {ciphertext: "G", plaintext: ""},
-            {ciphertext: "H", plaintext: ""},
-            {ciphertext: "I", plaintext: ""},
-            {ciphertext: "J", plaintext: ""},
-            {ciphertext: "K", plaintext: ""},
-            {ciphertext: "L", plaintext: ""},
-            {ciphertext: "M", plaintext: ""},
-            {ciphertext: "N", plaintext: ""},
-            {ciphertext: "O", plaintext: ""},
-            {ciphertext: "P", plaintext: ""},
-            {ciphertext: "Q", plaintext: ""},
-            {ciphertext: "R", plaintext: ""},
-            {ciphertext: "T", plaintext: ""},
-            {ciphertext: "U", plaintext: ""},
-            {ciphertext: "V", plaintext: ""},
-            {ciphertext: "W", plaintext: ""},
-            {ciphertext: "X", plaintext: ""},
-            {ciphertext: "Y", plaintext: ""},
-            {ciphertext: "Z", plaintext: ""}
-        ];
+        const plaintext = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        let ciphertext = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
 
-        //async function (program waits for data to be fetched)
-        let getData = async () => {
-            document.getElementById("textTable").innerHTML = "<table id='text'></table>";
-            let textData = "<tr><th>Ciphertext</th><th>Plaintext</th></tr>";
-            for (item of text) {
-                textData += "<tr><td>" + item.ciphertext + "</td><td> <input type='text' name=" + item.plaintext + "</td></tr>";
+        function buildTable() {
+            let dataHTML = "<tr><th>Plaintext</th><th>Ciphertext</th></tr>";
+            for (let i = 0; i < 26; i++) {
+                dataHTML += `<tr><td>${plaintext[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertext[i] == "-") ? "" : ciphertext[i]}'></td><tr>`;
             }
-            fillTable(textData, "text");
+            document.getElementById("translationTable").innerHTML = dataHTML;
+
+            document.getElementById("translationTable").addEventListener("keyup", updateText);
         }
 
-        //fills table with data
-        let fillTable = (data, name) => {
-            let table = document.getElementById(name);
-            table.innerHTML = data;
+        function updateText() {
+            let oldCipherText = [...ciphertext];
+            // Get new cipher text
+            for (let i = 0; i < plaintext.length; i++) {
+                let newLetter = document.getElementById(`ciphertextChar${i}`).value.toUpperCase();
+                if (newLetter.length == 1 && newLetter.match(/[A-Z]/)) ciphertext[i] = newLetter;
+                if (newLetter.length == 0) ciphertext[i] = "-";
+            }
+            for (let i = 0; i < plaintext.length; i++) {
+                let oldLetter = oldCipherText[i];
+                let currentLetter = ciphertext[i];
+                if (oldLetter != currentLetter) {
+                    // New letter is different
+                    if (currentLetter !== "") { // if it equals nothing, do nothing, if not:
+                        // Check if new letter exists somewhere else in OLD one
+                        if (oldCipherText.includes(currentLetter)) {
+                            // It is in old one
+                            ciphertext[oldCipherText.indexOf(currentLetter)] = "-";
+                            oldCipherText[oldCipherText.indexOf(currentLetter)] = "-";
+                        }
+                    }
+                }
+            }
+            buildTable();
+            console.log(ciphertext.join("")); //used for debugging purposes
         }
+
     </script>
-    
 </head>
-<body onload="getData()">
 
-<div id="textTable"></div>
-
+<body onload="buildTable()">
+<table id="translationTable"></table>
 </body>
 </html>
