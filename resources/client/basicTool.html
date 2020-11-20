@@ -4,50 +4,84 @@
     <meta charset="UTF-8">
     <title>BASIC CIPHER TOOL</title>
     <script>
-        const plaintext = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-        let ciphertext = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
+        //translation alphabets
+        const plaintextCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        let ciphertextCharacters = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
 
-        function buildTable() {
+        //code for translation table
+        function buildTranslationTable() {
             let dataHTML = "<tr><th>Plaintext</th><th>Ciphertext</th></tr>";
             for (let i = 0; i < 26; i++) {
-                dataHTML += `<tr><td>${plaintext[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertext[i] == "-") ? "" : ciphertext[i]}'></td><tr>`;
+                dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] == "-") ? "" : ciphertextCharacters[i]}'></td><tr>`;
             }
             document.getElementById("translationTable").innerHTML = dataHTML;
-
             document.getElementById("translationTable").addEventListener("keyup", updateText);
         }
 
         function updateText() {
-            let oldCipherText = [...ciphertext];
+            let oldCipherText = [...ciphertextCharacters];
             // Get new cipher text
-            for (let i = 0; i < plaintext.length; i++) {
+            for (let i = 0; i < plaintextCharacters.length; i++) {
                 let newLetter = document.getElementById(`ciphertextChar${i}`).value.toUpperCase();
-                if (newLetter.length == 1 && newLetter.match(/[A-Z]/)) ciphertext[i] = newLetter;
-                if (newLetter.length == 0) ciphertext[i] = "-";
+                if (newLetter.length == 1 && newLetter.match(/[A-Z]/)) ciphertextCharacters[i] = newLetter;
+                if (newLetter.length == 0) ciphertextCharacters[i] = "-";
             }
-            for (let i = 0; i < plaintext.length; i++) {
+            for (let i = 0; i < plaintextCharacters.length; i++) {
                 let oldLetter = oldCipherText[i];
-                let currentLetter = ciphertext[i];
+                let currentLetter = ciphertextCharacters[i];
                 if (oldLetter != currentLetter) {
                     // New letter is different
                     if (currentLetter !== "") { // if it equals nothing, do nothing, if not:
                         // Check if new letter exists somewhere else in OLD one
                         if (oldCipherText.includes(currentLetter)) {
                             // It is in old one
-                            ciphertext[oldCipherText.indexOf(currentLetter)] = "-";
+                            ciphertextCharacters[oldCipherText.indexOf(currentLetter)] = "-";
                             oldCipherText[oldCipherText.indexOf(currentLetter)] = "-";
                         }
                     }
                 }
             }
-            buildTable();
-            console.log(ciphertext.join("")); //used for debugging purposes
+            buildTranslationTable();
+            //console.log(ciphertextCharacters.join("")); //used for debugging purposes
         }
 
+        //code for display table
+        function buildDisplay(){
+            let dataHTML = "<tr><td>Ciphertext message: <input type='text' id='ciphertextMessage'></td></tr>";
+            dataHTML += ; //finish this to display letter part
+            dataHTML += "<tr><td>Plaintext message: </td></tr>"; //finish this to display translated plaintext message
+            document.getElementById("displayTable").innerHTML = dataHTML;
+            document.getElementById("displayTable").addEventListener("keyup", displayLetters);
+        }
+
+        //TO DO in function displayLetters: Take ciphertextMessage input and turn it into an array with each character
+        //as one item (including spaces, numbers, other special characters).
+        //Convert each ciphertextMessage array item into the corresponding plaintext character and put into a new
+        //plaintextMessage array. Display e.g; 30 characters in one table row with the ciphertext characters on top and
+        //the corresponding plaintext characters underneath. Continue inputting rows until the whole message is displayed.
+        //Join together the plaintextMessage array to create the plaintext message.
+        function displayLetters(ciphertextMessage) {
+            let ciphertextChar = '';
+            let plaintextChar = '';
+            for (let i = 0; i < ciphertextMessage.length; i++) {
+                ciphertextChar = ciphertextMessage.charAt(i).toUpperCase(); //breaks down inputted ciphertext into single characters
+                if (ciphertextChar.match(/[A-Z]/)){
+                    plaintextChar = plaintextCharacters[ciphertextCharacters.indexOf(ciphertextChar)];
+                } else {
+                    plaintextChar = ciphertextChar;
+                }
+            }
+        }
     </script>
 </head>
 
-<body onload="buildTable()">
+<body onload="buildTranslationTable()">
+
+<!--translation table-->
 <table id="translationTable"></table>
+
+<!--display table-->
+<table id="displayTable"></table>
+
 </body>
 </html>
