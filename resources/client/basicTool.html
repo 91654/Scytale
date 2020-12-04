@@ -8,6 +8,10 @@
         const plaintextCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         let ciphertextCharacters = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
 
+        //ciphertext message and corresponding plaintext message
+        let ciphertextMessage = document.getElementById("inputMessage").innerText.toUpperCase();
+        let plaintextMessage = "";
+
         //code for translation table
         function buildTranslationTable() {
             let dataHTML = "<tr><th>Plaintext</th><th>Ciphertext</th></tr>";
@@ -45,43 +49,265 @@
             //console.log(ciphertextCharacters.join("")); //used for debugging purposes
         }
 
-        //code for display table
-        function buildDisplay(){
-            let dataHTML = "<tr><td>Ciphertext message: <input type='text' id='ciphertextMessage'></td></tr>";
-            dataHTML += ; //finish this to display letter part
-            dataHTML += "<tr><td>Plaintext message: </td></tr>"; //finish this to display translated plaintext message
-            document.getElementById("displayTable").innerHTML = dataHTML;
-            document.getElementById("displayTable").addEventListener("keyup", displayLetters);
+
+
+
+
+
+        //code for display flexboxes
+        //need to create flexbox for user to enter ciphertextMessage and flexbox to output the plaintextMessage
+
+        let cipherLetterArray = ciphertextMessage.split(''); //creates array of each character in ciphertextMessage
+        let plainLetterArray = [];
+        let containerBlock;
+        let wordBlock;
+        let letterBlock;
+        let cipherLetter;
+        let plainLetter;
+
+        document.getElementById('inputMessage').addEventListener('keypress', function (e) {
+            if (e.keyCode == 13) {
+                createPlaintextMessage();
+            }
+        }, false);
+
+        function createPlaintextMessage(){
+            for (let i = 0; i < ciphertextMessage.length; i++){
+                if (cipherLetterArray[i].match(/[A-Z]/)){
+                    plainLetterArray[i] = plaintextCharacters[ciphertextCharacters.indexOf(cipherLetterArray[i])];
+                } else {
+                    plainLetterArray[i] = cipherLetterArray[i];
+                }
+            }
+            plaintextMessage = plainLetterArray.join('');
+            document.getElementById("outputMessage").innerText += plaintextMessage;
         }
 
-        //TO DO in function displayLetters: Take ciphertextMessage input and turn it into an array with each character
-        //as one item (including spaces, numbers, other special characters).
-        //Convert each ciphertextMessage array item into the corresponding plaintext character and put into a new
-        //plaintextMessage array. Display e.g; 30 characters in one table row with the ciphertext characters on top and
-        //the corresponding plaintext characters underneath. Continue inputting rows until the whole message is displayed.
-        //Join together the plaintextMessage array to create the plaintext message.
-        function displayLetters(ciphertextMessage) {
-            let ciphertextChar = '';
-            let plaintextChar = '';
-            for (let i = 0; i < ciphertextMessage.length; i++) {
-                ciphertextChar = ciphertextMessage.charAt(i).toUpperCase(); //breaks down inputted ciphertext into single characters
-                if (ciphertextChar.match(/[A-Z]/)){
-                    plaintextChar = plaintextCharacters[ciphertextCharacters.indexOf(ciphertextChar)];
-                } else {
-                    plaintextChar = ciphertextChar;
+        function createDivs(){
+            containerBlock = document.getElementsByClassName("displayLetters"); // single vs double quotes https://stackoverflow.com/questions/44208081/js-quote-best-practices-es6-react-single-double-backticks
+            for (let i = 0; i < cipherLetterArray.length; i++){ // loops for the number of words in the ciphertext inputted times
+                wordBlock = document.createElement("div"); //creates a number of divs (equal to number of words)
+                wordBlock.className = "word"; //sets class of these divs to word              TAKE OUT LATER: can talk about .className and .id vs setAttribute : https://stackoverflow.com/questions/33451050/classname-vs-get-setattribute-method
+                containerBlock.appendChild(wordBlock); //adds each div inside the containerBlock
+
+                for (let j = 0; j < cipherLetterArray[i].length; j++){ //loops for the length of each word (number of characters) times
+                    letterBlock = document.createElement("div"); //creates a number of divs (equal to the number of characters in each word)
+                    letterBlock.className = "letter"; //sets class of these divs to letter
+                    wordBlock.appendChild(letterBlock); //adds each div inside the wordBlock
+
+                    cipherLetter = document.createElement("div");
+                    cipherLetter.innerHTML = cipherLetterArray[j];
+                    letterBlock.appendChild(cipherLetter);
+
+                    plainLetter = document.createElement("div");
+                    plainLetter.innerHTML = plainLetterArray[j];
+                    letterBlock.appendChild(plainLetter);
                 }
             }
         }
+
+        //creates letter frequency analysis table
+        function calculateFrequency(){
+            //.csa.csa.c.sacs.acsa.c
+        }
+
+        //function to run necessary functions needed when page is loaded
+        function start(){
+            buildTranslationTable();
+            createDivs();
+        }
+
     </script>
 </head>
 
-<body onload="buildTranslationTable()">
+<body onload="start()">
 
 <!--translation table-->
 <table id="translationTable"></table>
 
-<!--display table-->
-<table id="displayTable"></table>
+<!--display flexboxes-->
+<div class="messages">Enter ciphertext: <input type="text" id="inputMessage"></div>
+<div class ="displayLetters"></div>
+<div class ="messages" id="outputMessage">Plaintext output: </div>
 
+<!-- letter frequency tables-->
+<div class="letterFrequency"> <!-- look into sorting them by letter/frequency? -->
+    <div class="letterSource">
+        <div class="heading">
+            <span>English</span>
+        </div>
+        <div class="heading">
+            <div class="values">
+                <span>Letter</span>
+            </div>
+            <div class="values">
+                <span>E</span>
+            </div>
+            <div class="values">
+                <span>T</span>
+            </div>
+            <div class="values">
+                <span>A</span>
+            </div>
+            <div class="values">
+                <span>O</span>
+            </div>
+            <div class="values">
+                <span>I</span>
+            </div>
+            <div class="values">
+                <span>N</span>
+            </div>
+            <div class="values">
+                <span>S</span>
+            </div>
+            <div class="values">
+                <span>R</span>
+            </div>
+            <div class="values">
+                <span>H</span>
+            </div>
+            <div class="values">
+                <span>D</span>
+            </div>
+            <div class="values">
+                <span>L</span>
+            </div>
+            <div class="values">
+                <span>U</span>
+            </div>
+            <div class="values">
+                <span>C</span>
+            </div>
+            <div class="values">
+                <span>M</span>
+            </div>
+            <div class="values">
+                <span>F</span>
+            </div>
+            <div class="values">
+                <span>Y</span>
+            </div>
+            <div class="values">
+                <span>W</span>
+            </div>
+            <div class="values">
+                <span>G</span>
+            </div>
+            <div class="values">
+                <span>P</span>
+            </div>
+            <div class="values">
+                <span>B</span>
+            </div>
+            <div class="values">
+                <span>V</span>
+            </div>
+            <div class="values">
+                <span>K</span>
+            </div>
+            <div class="values">
+                <span>X</span>
+            </div>
+            <div class="values">
+                <span>Q</span>
+            </div>
+            <div class="values">
+                <span>J</span>
+            </div>
+            <div class="values">
+                <span>Z</span>
+            </div>
+        </div>
+        <div class="heading">
+            <div class="values">
+                <span>Frequency</span>
+            </div>
+            <div class="values">
+                <span>12.02</span>
+            </div>
+            <div class="values">
+                <span>9.10</span>
+            </div>
+            <div class="values">
+                <span>8.12</span>
+            </div>
+            <div class="values">
+                <span>7.68</span>
+            </div>
+            <div class="values">
+                <span>7.31</span>
+            </div>
+            <div class="values">
+                <span>6.95</span>
+            </div>
+            <div class="values">
+                <span>6.28</span>
+            </div>
+            <div class="values">
+                <span>6.02</span>
+            </div>
+            <div class="values">
+                <span>5.92</span>
+            </div>
+            <div class="values">
+                <span>4.32</span>
+            </div>
+            <div class="values">
+                <span>3.98</span>
+            </div>
+            <div class="values">
+                <span>2.88</span>
+            </div>
+            <div class="values">
+                <span>2.71</span>
+            </div>
+            <div class="values">
+                <span>2.61</span>
+            </div>
+            <div class="values">
+                <span>2.30</span>
+            </div>
+            <div class="values">
+                <span>2.11</span>
+            </div>
+            <div class="values">
+                <span>2.09</span>
+            </div>
+            <div class="values">
+                <span>2.03</span>
+            </div>
+            <div class="values">
+                <span>1.82</span>
+            </div>
+            <div class="values">
+                <span>1.49</span>
+            </div>
+            <div class="values">
+                <span>1.11</span>
+            </div>
+            <div class="values">
+                <span>0.69</span>
+            </div>
+            <div class="values">
+                <span>0.17</span>
+            </div>
+            <div class="values">
+                <span>0.11</span>
+            </div>
+            <div class="values">
+                <span>0.10</span>
+            </div>
+            <div class="values">
+                <span>0.07</span>
+            </div>
+        </div>
+    </div>
+    <div class="letterSource">
+        <div class="heading">
+            <span>Message</span>
+        </div>
+    </div>
+</div>
 </body>
 </html>

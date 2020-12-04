@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <title>BASIC CIPHER TOOL</title>
     <script>
+        //translation alphabets
         const plaintextCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         let ciphertextCharacters = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
+
+        //ciphertext message and corresponding plaintext message
+        let ciphertextMessage = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"; //USER WILL INPUT CIPHERTEXTMESSAGE INTO FLEXBOX PART, ENSURE IT IS UPPERCASE
+        let plaintextMessage = "";
 
         //code for translation table
         function buildTranslationTable() {
@@ -14,7 +19,6 @@
                 dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] == "-") ? "" : ciphertextCharacters[i]}'></td><tr>`;
             }
             document.getElementById("translationTable").innerHTML = dataHTML;
-
             document.getElementById("translationTable").addEventListener("keyup", updateText);
         }
 
@@ -42,25 +46,70 @@
                 }
             }
             buildTranslationTable();
-            console.log(ciphertextCharacters.join("")); //used for debugging purposes
+            //console.log(ciphertextCharacters.join("")); //used for debugging purposes
         }
 
-        //code for display table
-        function createDisplay() {
-            for (let i = 0; i < ciphertextMessage)
+
+
+
+
+
+        //code for display flexboxes
+        //need to create flexbox for user to enter ciphertextMessage and flexbox to output the plaintextMessage
+
+        let cipherLetterArray = ciphertextMessage.split('');
+        let plainLetterArray = [];
+        let containerBlock;
+        let wordBlock;
+        let letterBlock;
+        let cipherLetter;
+        let plainLetter;
+
+        function createPlaintextMessage(){
+            for (let i = 0; i < ciphertextMessage.length; i++){
+                if (cipherLetterArray[i].match(/[A-Z]/)){
+                    plainLetterArray[i] = plaintextCharacters[ciphertextCharacters.indexOf(cipherLetterArray[i])];
+                } else {
+                    plainLetterArray[i] = cipherLetterArray[i];
+                }
+            }
+            plaintextMessage = plainLetterArray.join('');
         }
+
+        function createDivs(){
+            containerBlock = document.getElementsByClassName("displayLetters"); // single vs double quotes https://stackoverflow.com/questions/44208081/js-quote-best-practices-es6-react-single-double-backticks
+            for (let i = 0; i < cipherLetterArray.length; i++){ // loops for the number of words in the ciphertext inputted times
+                wordBlock = document.createElement("DIV"); //creates a number of divs (equal to number of words)
+                wordBlock.className = "word"; //sets class of these divs to word              TAKE OUT LATER: can talk about .className and .id vs setAttribute : https://stackoverflow.com/questions/33451050/classname-vs-get-setattribute-method
+                containerBlock.appendChild(wordBlock); //adds each div inside the containerBlock
+
+                for (let j = 0; j < cipherLetterArray[i].length; j++){ //loops for the length of each word (number of characters) times
+                    letterBlock = document.createElement("DIV"); //creates a number of divs (equal to the number of characters in each word)
+                    letterBlock.className = "letter"; //sets class of these divs to letter
+                    wordBlock.appendChild(letterBlock); //adds each div inside the wordBlock
+
+                    cipherLetter = document.createElement("DIV");
+                    cipherLetter.innerHTML = cipherLetterArray[j];
+                    letterBlock.appendChild(cipherLetter);
+
+                    plainLetter = document.createElement("DIV");
+                    plainLetter.innerHTML = plainLetterArray[j];
+                    letterBlock.appendChild(plainLetter);
+                }
+            }
+        }
+
     </script>
 </head>
 
-<!--inserts translation table in-->
 <body onload="buildTranslationTable()">
+
+<!--translation table-->
 <table id="translationTable"></table>
 
-<!--display table-->
-<table id="displayTable">
-    <tr><td>Ciphertext message: <input type='text' id='ciphertextMessage'></td></tr>
-    <tr><td>Plaintext message: </td></tr>
-</table>
+<!--display flexboxes-->
+<div class ="displayLetters"></div>
+
 
 </body>
 </html>
