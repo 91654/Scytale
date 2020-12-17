@@ -46,7 +46,6 @@
                 }
             }
             buildTranslationTable();
-            //console.log(ciphertextCharacters.join("")); //used for debugging purposes
         }
 
 
@@ -101,44 +100,45 @@
             }
         }
 
-
-
         //creates letter frequency analysis table
 
         let messageString;
         let totalLetters = 0;
         let letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         let letterCountArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let frequencyArray = [...letterCountArray];
+        let frequencyArray = [...letterCountArray]; //a copy of the letterCountArray
 
         function calculateFrequency(){
             messageString = ciphertextMessage.split(' ').join('');
             for (let i = 0; i < messageString.length; i++){
                 let currentCharacter = messageString.charAt(i)
-                if (currentCharacter.match(/[A-Z]/)){
-                    frequencyArray[letterArray.indexOf(currentCharacter)]++;
+                if (currentCharacter.match(/[A-Z]/)){ //only looks at characters between A and Z (not punctuation or numbers)
+                    letterCountArray[letterArray.indexOf(currentCharacter)]++; //fills up the frequencyArray with the frequency each character occurs
                 }
             }
 
             for (let i = 0; i < 26; i++){
-                totalLetters += letterCountArray[i];
+                totalLetters += letterCountArray[i]; //calculates total number of letters
             }
 
             for (let i = 0; i < 26; i++){
                 let freq = ((letterCountArray[i]/totalLetters)*100).toFixed(2);
-                frequencyArray[i] = freq;
+                frequencyArray[i] = freq; //calculates frequency as a percentage
             }
 
             let frequencyArrayCopy = [...frequencyArray];
             let letterArrayCopy = [...letterArray];
             frequencyArray.sort(function(a, b){
                 return b - a;
-            })
+            }) //sorts the array into descending order
+
+            //sorts letters array so they are sorted in descending order (letters are in the same index position as their frequency)
             for (let i = 0; i < 26; i++){
-                let index = frequencyArray.indexOf(frequencyArrayCopy[i]);
-                letterArrayCopy[index] = letterArray[i];
+                let index = frequencyArray.indexOf(frequencyArrayCopy[i]); //finds the index of a particular frequency in the old frequency table in the new sorted frequency table
+                letterArrayCopy[index] = letterArray[i]; //sets the letter at this index in the correct index corresponding with the frequency in the sorted frequency table
             }
-            letterArray = letterArrayCopy;
+            letterArray = letterArrayCopy; //fills array up with letters in new positions
+
         }
 
         function fillFreqValues(){
