@@ -101,51 +101,66 @@
         }
 
         //creates letter frequency analysis table
-
+        let letterFreq = [
+            ["A", 0],
+            ["B", 0],
+            ["C", 0],
+            ["D", 0],
+            ["E", 0],
+            ["F", 0],
+            ["G", 0],
+            ["H", 0],
+            ["I", 0],
+            ["J", 0],
+            ["K", 0],
+            ["L", 0],
+            ["M", 0],
+            ["N", 0],
+            ["O", 0],
+            ["P", 0],
+            ["Q", 0],
+            ["R", 0],
+            ["S", 0],
+            ["T", 0],
+            ["U", 0],
+            ["V", 0],
+            ["W", 0],
+            ["X", 0],
+            ["Y", 0],
+            ["Z", 0]
+        ]
         let messageString;
         let totalLetters = 0;
-        let letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-        let letterCountArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let frequencyArray = [...letterCountArray]; //a copy of the letterCountArray
 
         function calculateFrequency(){
-            messageString = ciphertextMessage.split(' ').join('');
+            messageString = ciphertextMessage.split(' ').join(''); //removes spaces from user's ciphertext message
             for (let i = 0; i < messageString.length; i++){
-                let currentCharacter = messageString.charAt(i)
-                if (currentCharacter.match(/[A-Z]/)){ //only looks at characters between A and Z (not punctuation or numbers)
-                    letterCountArray[letterArray.indexOf(currentCharacter)]++; //fills up the frequencyArray with the frequency each character occurs
+                let currentCharacter = messageString.charAt(i);
+                if (currentCharacter.match(/[A-Z]/)){ //only considers capitalised letters between A - Z
+                    totalLetters++; //counts total letters
+                    for (let j = 0; j < letterFreq.length; j++){
+                        if (letterFreq[j][0] == currentCharacter){
+                            letterFreq[j][1]++; //increases the frequency of the current character by 1
+                        }
+                    }
                 }
             }
 
-            for (let i = 0; i < 26; i++){
-                totalLetters += letterCountArray[i]; //calculates total number of letters
+            for (let i = 0; i < letterFreq.length; i++){
+                letterFreq[i][1] = ((letterFreq[i][1]/totalLetters)*100).toFixed(2); //converts frequencies to a percentage to 2 dp
             }
 
-            for (let i = 0; i < 26; i++){
-                let freq = ((letterCountArray[i]/totalLetters)*100).toFixed(2);
-                frequencyArray[i] = freq; //calculates frequency as a percentage
-            }
-
-            let frequencyArrayCopy = [...frequencyArray];
-            let letterArrayCopy = [...letterArray];
-            frequencyArray.sort(function(a, b){
-                return b - a;
-            }) //sorts the array into descending order
-
-            //sorts letters array so they are sorted in descending order (letters are in the same index position as their frequency)
-            for (let i = 0; i < 26; i++){
-                let index = frequencyArray.indexOf(frequencyArrayCopy[i]); //finds the index of a particular frequency in the old frequency table in the new sorted frequency table
-                letterArrayCopy[index] = letterArray[i]; //sets the letter at this index in the correct index corresponding with the frequency in the sorted frequency table
-            }
-            letterArray = letterArrayCopy; //fills array up with letters in new positions
-
+            letterFreq.sort(function(a,b) {
+                return b[1]-a[1] //sorts the array into descending order by frequency
+            });
         }
 
         function fillFreqValues(){
             for (let i = 0; i < 26; i++){
-                document.getElementById('letter'+i).innerHTML =
+                document.getElementById('letter'+i).innerHTML = //FINISH
             }
         }
+
 
 
 
