@@ -16,7 +16,7 @@
         function buildTranslationTable() {
             let dataHTML = "<tr><th>Plaintext</th><th>Ciphertext</th></tr>";
             for (let i = 0; i < 26; i++) {
-                dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] == "-") ? "" : ciphertextCharacters[i]}'></td><tr>`;
+                dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] === "-") ? "" : ciphertextCharacters[i]}'></td><tr>`;
             }
             document.getElementById("translationTable").innerHTML = dataHTML;
             document.getElementById("translationTable").addEventListener("keyup", updateText);
@@ -27,13 +27,13 @@
             // Get new cipher text
             for (let i = 0; i < plaintextCharacters.length; i++) {
                 let newLetter = document.getElementById(`ciphertextChar${i}`).value.toUpperCase();
-                if (newLetter.length == 1 && newLetter.match(/[A-Z]/)) ciphertextCharacters[i] = newLetter;
-                if (newLetter.length == 0) ciphertextCharacters[i] = "-";
+                if (newLetter.length === 1 && newLetter.match(/[A-Z]/)) ciphertextCharacters[i] = newLetter;
+                if (newLetter.length === 0) ciphertextCharacters[i] = "-";
             }
             for (let i = 0; i < plaintextCharacters.length; i++) {
                 let oldLetter = oldCipherText[i];
                 let currentLetter = ciphertextCharacters[i];
-                if (oldLetter != currentLetter) {
+                if (oldLetter !== currentLetter) {
                     // New letter is different
                     if (currentLetter !== "") { // if it equals nothing, do nothing, if not:
                         // Check if new letter exists somewhere else in OLD one
@@ -65,12 +65,6 @@
         let cipherLetter;
         let plainLetter;
 
-        document.getElementById('inputMessage').addEventListener('keypress', function (e) {
-            if (e.keyCode == 13) {
-                createPlaintextMessage();
-            }
-        }, false);
-
         function createPlaintextMessage(){
             for (let i = 0; i < ciphertextMessage.length; i++){
                 if (cipherLetterArray[i].match(/[A-Z]/)){
@@ -80,7 +74,8 @@
                 }
             }
             plaintextMessage = plainLetterArray.join('');
-            document.getElementById("outputMessage").innerText += plaintextMessage;
+            console.log(plaintextMessage);
+            document.getElementById("outputMessage").innerHTML = plaintextMessage;
         }
 
         function createDivs(){
@@ -106,15 +101,58 @@
             }
         }
 
+
+
         //creates letter frequency analysis table
+
+        let messageString;
+        let totalLetters = 0;
+        let letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        let letterCountArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let frequencyArray = [...letterCountArray];
+
         function calculateFrequency(){
-            //.csa.csa.c.sacs.acsa.c
+            messageString = ciphertextMessage.split(' ').join('');
+            for (let i = 0; i < messageString.length; i++){
+                let currentCharacter = messageString.charAt(i)
+                if (currentCharacter.match(/[A-Z]/)){
+                    frequencyArray[letterArray.indexOf(currentCharacter)]++;
+                }
+            }
+
+            for (let i = 0; i < 26; i++){
+                totalLetters += letterCountArray[i];
+            }
+
+            for (let i = 0; i < 26; i++){
+                let freq = ((letterCountArray[i]/totalLetters)*100).toFixed(2);
+                frequencyArray[i] = freq;
+            }
+
+            let frequencyArrayCopy = [...frequencyArray];
+            let letterArrayCopy = [...letterArray];
+            frequencyArray.sort(function(a, b){
+                return b - a;
+            })
+            for (let i = 0; i < 26; i++){
+                let index = frequencyArray.indexOf(frequencyArrayCopy[i]);
+                letterArrayCopy[index] = letterArray[i];
+            }
+            letterArray = letterArrayCopy;
         }
+
+        function fillFreqValues(){
+            for (let i = 0; i < 26; i++){
+                document.getElementById('letter'+i).innerHTML =
+            }
+        }
+
+
+
 
         //function to run necessary functions needed when page is loaded
         function start(){
             buildTranslationTable();
-            createDivs();
         }
 
     </script>
@@ -127,185 +165,132 @@
 
 <!--display flexboxes-->
 <div class="messages">Enter ciphertext: <input type="text" id="inputMessage"></div>
+<button onclick="createPlaintextMessage()"></button>
 <div class ="displayLetters"></div>
 <div class ="messages" id="outputMessage">Plaintext output: </div>
 
 <!-- letter frequency tables-->
 <div class="letterFrequency"> <!-- look into sorting them by letter/frequency? -->
     <div class="letterSource">
+        <div class="heading">English</div>
         <div class="heading">
-            <span>English</span>
+            <div class="values">Letter</div>
+            <div class="values">E</div>
+            <div class="values">T</div>
+            <div class="values">A</div>
+            <div class="values">O</div>
+            <div class="values">I</div>
+            <div class="values">N</div>
+            <div class="values">S</div>
+            <div class="values">R</div>
+            <div class="values">H</div>
+            <div class="values">D</div>
+            <div class="values">L</div>
+            <div class="values">U</div>
+            <div class="values">C</div>
+            <div class="values">M</div>
+            <div class="values">F</div>
+            <div class="values">Y</div>
+            <div class="values">W</div>
+            <div class="values">G</div>
+            <div class="values">P</div>
+            <div class="values">B</div>
+            <div class="values">V</div>
+            <div class="values">K</div>
+            <div class="values">X</div>
+            <div class="values">Q</div>
+            <div class="values">J</div>
+            <div class="values">Z</div>
         </div>
         <div class="heading">
-            <div class="values">
-                <span>Letter</span>
-            </div>
-            <div class="values">
-                <span>E</span>
-            </div>
-            <div class="values">
-                <span>T</span>
-            </div>
-            <div class="values">
-                <span>A</span>
-            </div>
-            <div class="values">
-                <span>O</span>
-            </div>
-            <div class="values">
-                <span>I</span>
-            </div>
-            <div class="values">
-                <span>N</span>
-            </div>
-            <div class="values">
-                <span>S</span>
-            </div>
-            <div class="values">
-                <span>R</span>
-            </div>
-            <div class="values">
-                <span>H</span>
-            </div>
-            <div class="values">
-                <span>D</span>
-            </div>
-            <div class="values">
-                <span>L</span>
-            </div>
-            <div class="values">
-                <span>U</span>
-            </div>
-            <div class="values">
-                <span>C</span>
-            </div>
-            <div class="values">
-                <span>M</span>
-            </div>
-            <div class="values">
-                <span>F</span>
-            </div>
-            <div class="values">
-                <span>Y</span>
-            </div>
-            <div class="values">
-                <span>W</span>
-            </div>
-            <div class="values">
-                <span>G</span>
-            </div>
-            <div class="values">
-                <span>P</span>
-            </div>
-            <div class="values">
-                <span>B</span>
-            </div>
-            <div class="values">
-                <span>V</span>
-            </div>
-            <div class="values">
-                <span>K</span>
-            </div>
-            <div class="values">
-                <span>X</span>
-            </div>
-            <div class="values">
-                <span>Q</span>
-            </div>
-            <div class="values">
-                <span>J</span>
-            </div>
-            <div class="values">
-                <span>Z</span>
-            </div>
-        </div>
-        <div class="heading">
-            <div class="values">
-                <span>Frequency</span>
-            </div>
-            <div class="values">
-                <span>12.02</span>
-            </div>
-            <div class="values">
-                <span>9.10</span>
-            </div>
-            <div class="values">
-                <span>8.12</span>
-            </div>
-            <div class="values">
-                <span>7.68</span>
-            </div>
-            <div class="values">
-                <span>7.31</span>
-            </div>
-            <div class="values">
-                <span>6.95</span>
-            </div>
-            <div class="values">
-                <span>6.28</span>
-            </div>
-            <div class="values">
-                <span>6.02</span>
-            </div>
-            <div class="values">
-                <span>5.92</span>
-            </div>
-            <div class="values">
-                <span>4.32</span>
-            </div>
-            <div class="values">
-                <span>3.98</span>
-            </div>
-            <div class="values">
-                <span>2.88</span>
-            </div>
-            <div class="values">
-                <span>2.71</span>
-            </div>
-            <div class="values">
-                <span>2.61</span>
-            </div>
-            <div class="values">
-                <span>2.30</span>
-            </div>
-            <div class="values">
-                <span>2.11</span>
-            </div>
-            <div class="values">
-                <span>2.09</span>
-            </div>
-            <div class="values">
-                <span>2.03</span>
-            </div>
-            <div class="values">
-                <span>1.82</span>
-            </div>
-            <div class="values">
-                <span>1.49</span>
-            </div>
-            <div class="values">
-                <span>1.11</span>
-            </div>
-            <div class="values">
-                <span>0.69</span>
-            </div>
-            <div class="values">
-                <span>0.17</span>
-            </div>
-            <div class="values">
-                <span>0.11</span>
-            </div>
-            <div class="values">
-                <span>0.10</span>
-            </div>
-            <div class="values">
-                <span>0.07</span>
-            </div>
+            <div class="values">Frequency</div>
+            <div class="values">12.02</div>
+            <div class="values">9.10</div>
+            <div class="values">8.12</div>
+            <div class="values">7.68</div>
+            <div class="values">7.31</div>
+            <div class="values">6.95</div>
+            <div class="values">6.28</div>
+            <div class="values">6.02</div>
+            <div class="values">5.92</div>
+            <div class="values">4.32</div>
+            <div class="values">3.98</div>
+            <div class="values">2.88</div>
+            <div class="values">2.71</div>
+            <div class="values">2.61</div>
+            <div class="values">2.30</div>
+            <div class="values">2.11</div>
+            <div class="values">2.09</div>
+            <div class="values">2.03</div>
+            <div class="values">1.82</div>
+            <div class="values">1.49</div>
+            <div class="values">1.11</div>
+            <div class="values">0.69</div>
+            <div class="values">0.17</div>
+            <div class="values">0.11</div>
+            <div class="values">0.10</div>
+            <div class="values">0.07</div>
         </div>
     </div>
     <div class="letterSource">
+        <div class="heading">Message</div>
         <div class="heading">
-            <span>Message</span>
+            <div class="values">Letter</div>
+            <div class="values" id="letter0"></div>
+            <div class="values" id="letter1"></div>
+            <div class="values" id="letter2"></div>
+            <div class="values" id="letter3"></div>
+            <div class="values" id="letter4"></div>
+            <div class="values" id="letter5"></div>
+            <div class="values" id="letter6"></div>
+            <div class="values" id="letter7"></div>
+            <div class="values" id="letter8"></div>
+            <div class="values" id="letter9"></div>
+            <div class="values" id="letter10"></div>
+            <div class="values" id="letter11"></div>
+            <div class="values" id="letter12"></div>
+            <div class="values" id="letter13"></div>
+            <div class="values" id="letter14"></div>
+            <div class="values" id="letter15"></div>
+            <div class="values" id="letter16"></div>
+            <div class="values" id="letter17"></div>
+            <div class="values" id="letter18"></div>
+            <div class="values" id="letter19"></div>
+            <div class="values" id="letter20"></div>
+            <div class="values" id="letter21"></div>
+            <div class="values" id="letter22"></div>
+            <div class="values" id="letter23"></div>
+            <div class="values" id="letter24"></div>
+            <div class="values" id="letter25"></div>
+        </div>
+        <div class="heading">
+            <div class="values">Frequency</div>
+            <div class="values" id="frequency0"></div>
+            <div class="values" id="frequency1"></div>
+            <div class="values" id="frequency2"></div>
+            <div class="values" id="frequency3"></div>
+            <div class="values" id="frequency4"></div>
+            <div class="values" id="frequency5"></div>
+            <div class="values" id="frequency6"></div>
+            <div class="values" id="frequency7"></div>
+            <div class="values" id="frequency8"></div>
+            <div class="values" id="frequency9"></div>
+            <div class="values" id="frequency10"></div>
+            <div class="values" id="frequency11"></div>
+            <div class="values" id="frequency12"></div>
+            <div class="values" id="frequency13"></div>
+            <div class="values" id="frequency14"></div>
+            <div class="values" id="frequency15"></div>
+            <div class="values" id="frequency16"></div>
+            <div class="values" id="frequency17"></div>
+            <div class="values" id="frequency18"></div>
+            <div class="values" id="frequency19"></div>
+            <div class="values" id="frequency20"></div>
+            <div class="values" id="frequency21"></div>
+            <div class="values" id="frequency22"></div>
+            <div class="values" id="frequency23"></div>
+            <div class="values" id="frequency24"></div>
+            <div class="values" id="frequency25"></div>
         </div>
     </div>
 </div>
