@@ -1,0 +1,59 @@
+/* css for homepage */
+
+
+/* css for navigation bar */
+
+
+/* css for basicTool.html */
+
+/* translation table, id = translationTable */
+#translationTable {
+    width: 25%;
+    height: 100%;
+    float: left;
+}
+
+/* message display areas, class = middlePane */
+.middlePane {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+/* ciphertext input, class = messages, id = inputMessage */
+
+/* display area, id = displayLetters */
+
+/* plaintext output, class = messages, id = outputMessage */
+
+/* letter frequency tables */
+.letterFrequency {
+    width: 25%;
+    height: 100%;
+    position: relative;
+    float: right;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.letterSource {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 10px 20px;
+}
+
+.heading {
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.values {
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+
+/* css for challenges.html */
+

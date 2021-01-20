@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="css/style.css">
     <title>BASIC CIPHER TOOL</title>
     <script>
         //translation alphabets
         const plaintextCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         let ciphertextCharacters = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
 
-        //ciphertext message and corresponding plaintext message
-        let ciphertextMessage = document.getElementById("inputMessage").innerText.toUpperCase();
-        let plaintextMessage = "";
 
         //code for translation table
         function buildTranslationTable() {
@@ -48,101 +47,119 @@
             buildTranslationTable();
         }
 
+        //ciphertext message and corresponding plaintext message
 
+        let ciphertextMessage = "";
+        let plaintextMessage = "";
 
+        function createMessages() {
+            plaintextMessage = "";
+            document.getElementById("outputMessage").innerHTML = "Plaintext output: "; //resets outputMessage
+            ciphertextMessage = document.getElementById("inputMessage").value.toUpperCase(); //gets the ciphertext from the input box with id inputMessage
+            for (let i = 0; i < ciphertextMessage.length; i++) {
+                if (ciphertextMessage !== "") { //ensures nothing has been entered
+                    if (ciphertextMessage.charAt(i).match(/[A-Z]/)){ //when the character is a letter which needs to be changed
+                        plaintextMessage = plaintextMessage + plaintextCharacters[ciphertextCharacters.indexOf(ciphertextMessage.charAt(i))]; //inputs the plaintext equivalent character
+                    } else { //when the character is punctuation/space/number etc which don't need to be changed
+                        plaintextMessage = plaintextMessage + ciphertextMessage.charAt(i);
+                    }
+                }
+            }
+            document.getElementById("outputMessage").innerHTML = document.getElementById("outputMessage").innerHTML + " " + plaintextMessage; //adds the calculate plaintext message to outputMessage DIV
+        }
 
 
 
         //code for display flexboxes
-        //need to create flexbox for user to enter ciphertextMessage and flexbox to output the plaintextMessage
-
-        let cipherLetterArray = ciphertextMessage.split(''); //creates array of each character in ciphertextMessage
-        let plainLetterArray = [];
-        let containerBlock;
-        let wordBlock;
-        let letterBlock;
-        let cipherLetter;
-        let plainLetter;
-
-        function createPlaintextMessage(){
-            for (let i = 0; i < ciphertextMessage.length; i++){
-                if (cipherLetterArray[i].match(/[A-Z]/)){
-                    plainLetterArray[i] = plaintextCharacters[ciphertextCharacters.indexOf(cipherLetterArray[i])];
-                } else {
-                    plainLetterArray[i] = cipherLetterArray[i];
-                }
-            }
-            plaintextMessage = plainLetterArray.join('');
-            console.log(plaintextMessage);
-            document.getElementById("outputMessage").innerHTML = plaintextMessage;
-        }
 
         function createDivs(){
-            containerBlock = document.getElementsByClassName("displayLetters"); // single vs double quotes https://stackoverflow.com/questions/44208081/js-quote-best-practices-es6-react-single-double-backticks
-            for (let i = 0; i < cipherLetterArray.length; i++){ // loops for the number of words in the ciphertext inputted times
+            document.getElementById("displayLetters").innerHTML = ""; //clears div, removing any previous text
+            //resets all variables
+            let containerBlock;
+            let wordBlock = "";
+            let letterBlock = "";
+            let cipherLetter = "";
+            let plainLetter = "";
+            let charactersUsed = 0;
+
+            //calculates number of words in message
+            if (ciphertextMessage.charAt(ciphertextMessage.length -1) === " ") {
+                ciphertextMessage = ciphertextMessage.slice(0, -1); //removes space at end of ciphertext if there is one present
+            }
+            let noWords = ciphertextMessage.split(" ").length;
+            let words = ciphertextMessage.split(" ");
+
+            containerBlock = document.getElementById("displayLetters"); // TAKE OUT LATER: single vs double quotes https://stackoverflow.com/questions/44208081/js-quote-best-practices-es6-react-single-double-backticks
+            for (let i = 0; i < noWords; i++){ // loops for the number of words in the ciphertext inputted times
                 wordBlock = document.createElement("div"); //creates a number of divs (equal to number of words)
                 wordBlock.className = "word"; //sets class of these divs to word              TAKE OUT LATER: can talk about .className and .id vs setAttribute : https://stackoverflow.com/questions/33451050/classname-vs-get-setattribute-method
                 containerBlock.appendChild(wordBlock); //adds each div inside the containerBlock
 
-                for (let j = 0; j < cipherLetterArray[i].length; j++){ //loops for the length of each word (number of characters) times
+                for (let j = 0; j < words[i].length; j++){ //loops for the length of each word (number of characters) times
                     letterBlock = document.createElement("div"); //creates a number of divs (equal to the number of characters in each word)
                     letterBlock.className = "letter"; //sets class of these divs to letter
                     wordBlock.appendChild(letterBlock); //adds each div inside the wordBlock
 
                     cipherLetter = document.createElement("div");
-                    cipherLetter.innerHTML = cipherLetterArray[j];
+                    cipherLetter.innerHTML = ciphertextMessage.charAt(charactersUsed + j); //starts from end of last word
                     letterBlock.appendChild(cipherLetter);
 
                     plainLetter = document.createElement("div");
-                    plainLetter.innerHTML = plainLetterArray[j];
+                    plainLetter.innerHTML = plaintextMessage.charAt(charactersUsed + j); //starts from end of last word
                     letterBlock.appendChild(plainLetter);
                 }
+                charactersUsed = charactersUsed + 1 + words[i].length; //1 is for the space, words[i].length is length of previous word
             }
         }
 
         //creates letter frequency analysis table
-        let letterFreq = [
-            ["A", 0],
-            ["B", 0],
-            ["C", 0],
-            ["D", 0],
-            ["E", 0],
-            ["F", 0],
-            ["G", 0],
-            ["H", 0],
-            ["I", 0],
-            ["J", 0],
-            ["K", 0],
-            ["L", 0],
-            ["M", 0],
-            ["N", 0],
-            ["O", 0],
-            ["P", 0],
-            ["Q", 0],
-            ["R", 0],
-            ["S", 0],
-            ["T", 0],
-            ["U", 0],
-            ["V", 0],
-            ["W", 0],
-            ["X", 0],
-            ["Y", 0],
-            ["Z", 0]
-        ]
+        let letterFreq = [];
         let messageString;
-        let totalLetters = 0;
 
         function calculateFrequency(){
+            letterFreq = [
+                ["A", 0],
+                ["B", 0],
+                ["C", 0],
+                ["D", 0],
+                ["E", 0],
+                ["F", 0],
+                ["G", 0],
+                ["H", 0],
+                ["I", 0],
+                ["J", 0],
+                ["K", 0],
+                ["L", 0],
+                ["M", 0],
+                ["N", 0],
+                ["O", 0],
+                ["P", 0],
+                ["Q", 0],
+                ["R", 0],
+                ["S", 0],
+                ["T", 0],
+                ["U", 0],
+                ["V", 0],
+                ["W", 0],
+                ["X", 0],
+                ["Y", 0],
+                ["Z", 0]
+            ]
+            let totalLetters = 0;
+            ciphertextMessage = document.getElementById("inputMessage").value.toUpperCase(); //gets the ciphertext from the input box with id inputMessage
             messageString = ciphertextMessage.split(' ').join(''); //removes spaces from user's ciphertext message
             for (let i = 0; i < messageString.length; i++){
                 let currentCharacter = messageString.charAt(i);
                 if (currentCharacter.match(/[A-Z]/)){ //only considers capitalised letters between A - Z
                     totalLetters++; //counts total letters
                     for (let j = 0; j < letterFreq.length; j++){
-                        if (letterFreq[j][0] == currentCharacter){
+                        if (letterFreq[j][0] === currentCharacter){
                             letterFreq[j][1]++; //increases the frequency of the current character by 1
                         }
+                        //console.log(letterFreq[j][1]); //doesn't work atm!!
                     }
+                } else {
+                    //when the character is empty/not a letter fill the frequency as 0
                 }
             }
 
@@ -153,21 +170,28 @@
             letterFreq.sort(function(a,b) {
                 return b[1]-a[1] //sorts the array into descending order by frequency
             });
+
+            //console.table(letterFreq);
         }
 
         function fillFreqValues(){
+            calculateFrequency();
             for (let i = 0; i < 26; i++){
-                document.getElementById('letter'+i).innerHTML = //FINISH
+                document.getElementById('letter'+i).innerHTML = letterFreq[i][0]; //retrieves the letter and puts it in a div with the name letter + the index of the letter in letterFreq
+                document.getElementById('frequency'+i).innerHTML = letterFreq[i][1]; //retrieves the frequency and puts it in a div with the name frequency + the index of that number in letterFreq
             }
         }
 
-
-
-
-
         //function to run necessary functions needed when page is loaded
-        function start(){
+        function start(){ //runs onload
             buildTranslationTable();
+            createMessages();
+        }
+
+        function buttonPress(){ //runs when button entering ciphertext is pressed
+            fillFreqValues();
+            createMessages();
+            createDivs();
         }
 
     </script>
@@ -179,15 +203,17 @@
 <table id="translationTable"></table>
 
 <!--display flexboxes-->
-<div class="messages">Enter ciphertext: <input type="text" id="inputMessage"></div>
-<button onclick="createPlaintextMessage()"></button>
-<div class ="displayLetters"></div>
-<div class ="messages" id="outputMessage">Plaintext output: </div>
+<div class="middlePane">
+    <div class="messages">Enter ciphertext: <input type="text" id="inputMessage"></div>
+    <button onclick="buttonPress()"></button>
+    <div id ="displayLetters"></div>
+    <div class ="messages" id="outputMessage">Plaintext output: </div>
+</div>
 
 <!-- letter frequency tables-->
-<div class="letterFrequency"> <!-- look into sorting them by letter/frequency? -->
-    <div class="letterSource">
-        <div class="heading">English</div>
+<div class="letterFrequency" id="englishFreq"> <!--encloses all divs-->
+    <div class="letterSource"> <!--encloses normal English DIVs-->
+        <div class="heading" id="caption1">English</div>
         <div class="heading">
             <div class="values">Letter</div>
             <div class="values">E</div>
@@ -247,65 +273,65 @@
             <div class="values">0.07</div>
         </div>
     </div>
-    <div class="letterSource">
-        <div class="heading">Message</div>
+    <div class="letterSource" id="userFreq"> <!--encloses user input DIVs-->
+        <div class="heading" id="caption2">Message</div>
         <div class="heading">
             <div class="values">Letter</div>
-            <div class="values" id="letter0"></div>
-            <div class="values" id="letter1"></div>
-            <div class="values" id="letter2"></div>
-            <div class="values" id="letter3"></div>
-            <div class="values" id="letter4"></div>
-            <div class="values" id="letter5"></div>
-            <div class="values" id="letter6"></div>
-            <div class="values" id="letter7"></div>
-            <div class="values" id="letter8"></div>
-            <div class="values" id="letter9"></div>
-            <div class="values" id="letter10"></div>
-            <div class="values" id="letter11"></div>
-            <div class="values" id="letter12"></div>
-            <div class="values" id="letter13"></div>
-            <div class="values" id="letter14"></div>
-            <div class="values" id="letter15"></div>
-            <div class="values" id="letter16"></div>
-            <div class="values" id="letter17"></div>
-            <div class="values" id="letter18"></div>
-            <div class="values" id="letter19"></div>
-            <div class="values" id="letter20"></div>
-            <div class="values" id="letter21"></div>
-            <div class="values" id="letter22"></div>
-            <div class="values" id="letter23"></div>
-            <div class="values" id="letter24"></div>
-            <div class="values" id="letter25"></div>
+            <div class="values" id="letter0">A</div>
+            <div class="values" id="letter1">B</div>
+            <div class="values" id="letter2">C</div>
+            <div class="values" id="letter3">D</div>
+            <div class="values" id="letter4">E</div>
+            <div class="values" id="letter5">F</div>
+            <div class="values" id="letter6">G</div>
+            <div class="values" id="letter7">H</div>
+            <div class="values" id="letter8">I</div>
+            <div class="values" id="letter9">J</div>
+            <div class="values" id="letter10">K</div>
+            <div class="values" id="letter11">L</div>
+            <div class="values" id="letter12">M</div>
+            <div class="values" id="letter13">N</div>
+            <div class="values" id="letter14">O</div>
+            <div class="values" id="letter15">P</div>
+            <div class="values" id="letter16">Q</div>
+            <div class="values" id="letter17">R</div>
+            <div class="values" id="letter18">S</div>
+            <div class="values" id="letter19">T</div>
+            <div class="values" id="letter20">U</div>
+            <div class="values" id="letter21">V</div>
+            <div class="values" id="letter22">W</div>
+            <div class="values" id="letter23">X</div>
+            <div class="values" id="letter24">Y</div>
+            <div class="values" id="letter25">Z</div>
         </div>
         <div class="heading">
             <div class="values">Frequency</div>
-            <div class="values" id="frequency0"></div>
-            <div class="values" id="frequency1"></div>
-            <div class="values" id="frequency2"></div>
-            <div class="values" id="frequency3"></div>
-            <div class="values" id="frequency4"></div>
-            <div class="values" id="frequency5"></div>
-            <div class="values" id="frequency6"></div>
-            <div class="values" id="frequency7"></div>
-            <div class="values" id="frequency8"></div>
-            <div class="values" id="frequency9"></div>
-            <div class="values" id="frequency10"></div>
-            <div class="values" id="frequency11"></div>
-            <div class="values" id="frequency12"></div>
-            <div class="values" id="frequency13"></div>
-            <div class="values" id="frequency14"></div>
-            <div class="values" id="frequency15"></div>
-            <div class="values" id="frequency16"></div>
-            <div class="values" id="frequency17"></div>
-            <div class="values" id="frequency18"></div>
-            <div class="values" id="frequency19"></div>
-            <div class="values" id="frequency20"></div>
-            <div class="values" id="frequency21"></div>
-            <div class="values" id="frequency22"></div>
-            <div class="values" id="frequency23"></div>
-            <div class="values" id="frequency24"></div>
-            <div class="values" id="frequency25"></div>
+            <div class="values" id="frequency0">0.00</div>
+            <div class="values" id="frequency1">0.00</div>
+            <div class="values" id="frequency2">0.00</div>
+            <div class="values" id="frequency3">0.00</div>
+            <div class="values" id="frequency4">0.00</div>
+            <div class="values" id="frequency5">0.00</div>
+            <div class="values" id="frequency6">0.00</div>
+            <div class="values" id="frequency7">0.00</div>
+            <div class="values" id="frequency8">0.00</div>
+            <div class="values" id="frequency9">0.00</div>
+            <div class="values" id="frequency10">0.00</div>
+            <div class="values" id="frequency11">0.00</div>
+            <div class="values" id="frequency12">0.00</div>
+            <div class="values" id="frequency13">0.00</div>
+            <div class="values" id="frequency14">0.00</div>
+            <div class="values" id="frequency15">0.00</div>
+            <div class="values" id="frequency16">0.00</div>
+            <div class="values" id="frequency17">0.00</div>
+            <div class="values" id="frequency18">0.00</div>
+            <div class="values" id="frequency19">0.00</div>
+            <div class="values" id="frequency20">0.00</div>
+            <div class="values" id="frequency21">0.00</div>
+            <div class="values" id="frequency22">0.00</div>
+            <div class="values" id="frequency23">0.00</div>
+            <div class="values" id="frequency24">0.00</div>
+            <div class="values" id="frequency25">0.00</div>
         </div>
     </div>
 </div>
