@@ -2,12 +2,355 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> <!-- used for scroll property -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500&display=swap" rel="stylesheet">
     <title>CHALLENGES</title>
+    <style>
+        #mainContent {
+            background-image: url('img/backgroundLight1.png');
+            background-size: cover;
+        }
+    </style>
     <script>
+        //API functions
+
+        // /challenges/list
+        function getChallengesList() {
+            console.log("Invoked getChallengesList() ");
+
+            const url = "/challenges/list"; //sets API path
+            fetch(url, {
+                method: "GET",
+            }).then(response => {
+                return response.json(); //returns response in JSON format
+            }).then(response => {
+                if (response.hasOwnProperty("Error")) { //deals with error messages
+                    alert(JSON.stringify(response));
+                } else {
+                    createChallenges(response); //adds the challenges to the page
+                }
+            })
+        }
+
+        // welp youre unneeeded
+
+        // // /challenges/get-num-levels
+        // function getNumLevels(data) {
+        //     console.log("Invoked getNumLevels() ");
+        //
+        //     let challenge = "/" + data;
+        //     const url = "/challenges/get-num-levels"; //sets API path
+        //
+        //     fetch(url + challenge, {
+        //         method: "GET",
+        //     }).then(response => {
+        //         return response.json(); //returns response in JSON format
+        //     }).then(response => {
+        //         if (response.hasOwnProperty("Error")) { //deals with error messages
+        //             alert(JSON.stringify(response));
+        //         } else {
+        //             // do stuff wdi data
+        //         }
+        //     })
+        // }
+
+        // /challenges/get-level
+        function getLevel(data) {
+            console.log("Invoked getLevel() ");
+
+            let levelId = "/" + data; //sets levelId appropriately
+            const url = "/challenges/get-level"; //sets API path
+
+            fetch(url + levelId, {
+                method:"GET",
+            }).then(response => {
+                return response.json(); //returns response in JSON format
+            }).then(response => {
+                if (response.hasOwnProperty("Error")) { //deals with error messages
+                    alert(JSON.stringify(response));
+                } else {
+                    addCiphertext(response);
+                }
+            })
+        }
+
+        // /tasks/validate-answer
+        function getAnswer(data) {
+            console.log("Invoked getAnswer() ");
+
+            let levelId = "/" + data; //sets levelId appropriately
+            const url = "/tasks/validate-answer"; //sets API path
+
+            fetch(url + levelId, {
+                method:"GET"
+            }).then(response => {
+                return response.json(); //returns response in JSON format
+            }).then(response => {
+                if (response.hasOwnProperty("Error")) { //deals with error messages
+                    alert(JSON.stringify(response));
+                } else {
+                    addPlaintext(response);
+                }
+            })
+        }
+
+        //challenges page scroll design
+        $(window).resize(sizeContent); //response design (resizes as page size changed)
+
+        function sizeContent() {
+            let newHeight = $("html").height() + "px"; //resizes page heights to fit on page
+            $(".header").css("height", newHeight);
+            $(".content").css("height", newHeight);
+        }
+
+        $(window).scroll(function () {
+            let pageHeight = $("html").height();
+            $(".header p").css("opacity", 1 - $(window).scrollTop() / pageHeight); //fades header when scrolled down (adjusted for page size)
+        });
+
+        //creating challenges
+
+        function hideElements() {
+            //hides the displays for a single level
+            document.getElementById("levelHeader").style.display = 'none';
+            document.getElementById("levelContent").style.display = 'none';
+
+            //hides plaintext answer divs
+            for (let i = 1; i < 6; i++) {
+                document.getElementById("plaintext" + i).style.display = 'none';
+            }
+
+            //hides message for completing the challenge
+            document.getElementById("challengeComplete").style.display = 'none';
+        }
+
+        function createChallenges(data) {
+            let containerBlock = "";
+            let challengeBox = "";
+            let challengeNum = "";
+            let levelLink = "";
+
+            for (let i = 0; i < data.length; i++) { //loop deals with each object in the array
+                if (data[i].Difficulty === 0) {
+                    containerBlock = document.getElementById("easy"); //gets easy element
+                }
+                else if (data[i].Difficulty === 1) {
+                    containerBlock = document.getElementById("medium"); //gets medium element
+                }
+                else if (data[i].Difficulty === 2) {
+                    containerBlock = document.getElementById("hard"); //gets hard element
+                } else {
+                    console.log("Error - invalid difficulty");
+                }
+                challengeBox = document.createElement("div");
+                challengeBox.className = "challengeBox"; //adds class name for css
+                containerBlock.appendChild(challengeBox); //adds challenge to the difficulty parent div
+
+                //adds challenge details
+                challengeNum = document.createElement("div");
+                let inputNum = "";
+                if (data[i].Challenge < 10) {
+                    inputNum = "0" + data[i].Challenge; //adds a 0 to the front if the challenge number is under 10
+                } else {
+                    inputNum = data[i].Challenge; //otherwise just uses the challenge number
+                }
+                challengeNum.innerHTML = inputNum; //sets text in challengeNum to the value of inputNum
+                challengeNum.className = "challengeId";
+                challengeBox.appendChild(challengeNum); //adds details to the correct challenge
+
+                levelLink = document.createElement("button");
+                levelLink.innerHTML = "play now"; //button will display “play now”
+                levelLink.className = "levelButton";
+                levelLink.id = "challenge" + data[i].Challenge; //gives unique id for each button in terms of what challenge it is
+                challengeBox.appendChild(levelLink); //adds each button to the correct challenge box
+
+                levelLink.addEventListener('click', viewLevel.bind(null, data[i].Challenge)); //calls function with to view levels with the correct challenge
+            }
+        }
+
+        function viewLevel(data) {
+            //hides the overall challenges display
+            document.getElementById("mainHeader").style.display = 'none';
+            document.getElementById("mainContent").style.display = 'none';
+
+            //shows the display for a level
+            document.getElementById("levelHeader").style.display = 'block';
+            document.getElementById("levelContent").style.display = 'block';
+
+            //challenge header
+            let challengeNum = "";
+            if (data < 10) {
+                challengeNum = "0" + data; //adds a 0 to the front if the challenge number is under 10
+            } else {
+                challengeNum = data; //otherwise just uses the challenge number
+            }
+            document.getElementById("levelHeader").innerHTML = "Challenge " + challengeNum;
+
+            //sets ciphertext for all levels
+            for (let i = 1; i < 6; i++) { //loops for each of the 5 levels
+                let levelId = data + "-" + i; //sets levelId correctly
+                getLevel(levelId); //runs API function to set details
+            }
+
+            //hides levels 2-5 initially
+            for (let i = 2; i < 6; i++) {
+                document.getElementById("ciphertext" + i).style.display = 'none';
+                document.getElementById("answer" + i).style.display = 'none';
+                document.getElementById("submitButton" + i).style.display = 'none';
+            }
+
+            //adds plaintext to each element
+            for (let i = 1; i < 6; i++) { //loops for each of the 5 levels
+                let levelId = data + "-" + i; //sets levelId correctly
+                getAnswer(levelId);
+            }
+
+            //checks users answer and allows them to continue onto next level if correct
+            let count = 0; //counts correct answers
+            for (let i = 1; i < 6; i++) {
+                document.getElementById("submitButton" + i).addEventListener('click', function() {
+                    let userAnswer = document.getElementById("userPlaintext" + i).value.toUpperCase(); //gets user's answer and converts to uppercase
+                    let actualAnswer = document.getElementById("plaintext" + i).innerHTML.toUpperCase(); //gets actual answer and converts to uppercase
+
+                    actualAnswer = actualAnswer.substring(12); //removes "Ciphertext: " from the start
+
+                    if (userAnswer === actualAnswer && document.getElementById("userPlaintext" + i).readOnly === false) { //prevents counter being increased by simply pressing the button
+                        count++; //increase counter
+                        //answer is correct
+                        document.getElementById("userPlaintext" + i).readOnly = true; //locks input box
+                        document.getElementById("submitButton" + i).innerHTML = "Correct answer!" //changes button to say correct
+
+                        if (count === 5) { //only shows completed challenge if all levels are completed
+                            document.getElementById("cookie").innerHTML = document.getElementById("cookie").innerHTML + "Set-Cookie: challenge_" + data + "=complete"; //bit of fun
+                            document.getElementById("challengeComplete").style.display = 'block'; //shows completed challenge message
+                        } else {
+                            //displays next level
+                            document.getElementById("ciphertext" + (i + 1)).style.display = 'block';
+                            document.getElementById("answer" + (i + 1)).style.display = 'block';
+                            document.getElementById("submitButton" + (i + 1)).style.display = 'block';
+                        }
+                    } else if (userAnswer != actualAnswer) {
+                        //answer is not correct
+                        document.getElementById("submitButton" + i).innerHTML = "Try again!" //encourages user to try again
+                    }
+                })
+            }
+        }
+
+        function addCiphertext(data) {
+            let levelId = data.LevelId; //gets the levelId
+            let ciphertext = data.Ciphertext; //gets the ciphertext for that level
+
+            if (levelId === undefined) { //ensures the level exists
+                document.getElementById("levelContent").innerHTML = "Level unfinished - return soon!"; //if level doesn't exist, displays friendly message for the user
+                console.log("Error - undefined levelId");
+            } else {
+                let ciphertextId = "ciphertext" + levelId.substring(levelId.indexOf("-") + 1); //gets the correct id for the ciphertext element
+                document.getElementById(ciphertextId).innerHTML = document.getElementById(ciphertextId).innerHTML + " " + ciphertext; //amends the ciphertext to the level
+            }
+        }
+
+        function addPlaintext(data) {
+            let levelId = data.LevelId; //gets the levelId
+            let plaintext = data.Plaintext; //gets the plaintext for that level
+
+            if (levelId === undefined) { //ensures the level exists
+                document.getElementById("levelContent").innerHTML = "Level unfinished - return soon!"; //if level doesn't exist, displays friendly message for the user
+                console.log("Error - undefined levelId");
+            } else {
+                let plaintextId = "plaintext" + levelId.substring(levelId.indexOf("-") + 1); //gets the correct id for the plaintext element
+                document.getElementById(plaintextId).innerHTML = document.getElementById(plaintextId).innerHTML + " " + plaintext; //amends the plaintext to the level
+            }
+        }
+
+        //functions to run on page load
+        function start() {
+            hideElements();
+            sizeContent();
+            getChallengesList();
+        }
 
     </script>
 </head>
-<body>
+<body onload="start()">
 
+<!--navigation bar-->
+<nav>
+    <ul class="menuItems">
+        <li id="title">Scytale</li>
+        <li><a href='http://localhost:8081/client/home.html' data-item='Home'>Home</a></li>
+        <li><a href='http://localhost:8081/client/basicTool.html' data-item='Tool'>Tool</a></li>
+        <li><a href='http://localhost:8081/client/challenges.html' data-item='Challenges'>Challenges</a></li>
+    </ul>
+</nav>
+
+<!--overview challenges-->
+<div class="header" id="mainHeader">
+    <p id="scrollTitle">Challenges</p>
+    <p id="scrollText">scroll to explore challenges <br> 🢓</p>
+</div>
+
+<div class="content" id="mainContent">
+    <div class="column" id="easy">
+        <p>Easy</p>
+    </div>
+    <div class="column" id="medium">
+        <p>Medium</p>
+    </div>
+    <div class="column" id="hard">
+        <p>Hard</p>
+    </div>
+</div>
+
+<!--level page-->
+<div id="levelHeader">
+</div>
+
+<div id="levelContent">
+    <div class="level" id="level1">
+        <p class="levelTitle" id="level1Title">Level 1</p>
+        <p id="ciphertext1">Ciphertext: </p>
+        <div id="answer1">Your answer: <input id="userPlaintext1" type="text"></div>
+        <button id="submitButton1">Submit</button>
+        <p id="plaintext1">Plaintext: </p>
+    </div>
+    <div class="level" id="level2">
+        <p class="levelTitle" id="level2Title">Level 2</p>
+        <p id="ciphertext2">Ciphertext: </p>
+        <div id="answer2">Your answer: <input id="userPlaintext2" type="text"></div>
+        <button id="submitButton2">Submit</button>
+        <p id="plaintext2">Plaintext: </p>
+    </div>
+    <div class="level" id="level3">
+        <p class="levelTitle" id="level3Title">Level 3</p>
+        <p id="ciphertext3">Ciphertext: </p>
+        <div id="answer3">Your answer: <input id="userPlaintext3" type="text"></div>
+        <button id="submitButton3">Submit</button>
+        <p id="plaintext3">Plaintext: </p>
+    </div>
+    <div class="level" id="level4">
+        <p class="levelTitle" id="level4Title">Level 4</p>
+        <p id="ciphertext4">Ciphertext: </p>
+        <div id="answer4">Your answer: <input id="userPlaintext4" type="text"></div>
+        <button id="submitButton4">Submit</button>
+        <p id="plaintext4">Plaintext: </p>
+    </div>
+    <div class="level" id="level5">
+        <p class="levelTitle" id="level5Title">Level 5</p>
+        <p id="ciphertext5">Ciphertext: </p>
+        <div id="answer5">Your answer: <input id="userPlaintext5" type="text"></div>
+        <button id="submitButton5">Submit</button>
+        <p id="plaintext5">Plaintext: </p>
+    </div>
+    <div id="challengeComplete">
+        <hr>
+        <p>Challenge complete!</p>
+        <p id="cookie">Here, have a cookie to celebrate &#127850: </p>
+        <a href="challenges.html">↼ Go back to challenges</a>
+    </div>
+</div>
 </body>
+
 </html>

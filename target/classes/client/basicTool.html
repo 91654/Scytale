@@ -8,14 +8,14 @@
     <script>
         //translation alphabets
         const plaintextCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-        let ciphertextCharacters = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
+        let ciphertextCharacters = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"];
 
 
         //code for translation table
         function buildTranslationTable() {
             let dataHTML = "<tr><th>Plaintext</th><th>Ciphertext</th></tr>";
             for (let i = 0; i < 26; i++) {
-                dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] === "-") ? "" : ciphertextCharacters[i]}'></td><tr>`;
+                dataHTML += `<tr><td>${plaintextCharacters[i]}</td><td><input type='text' id='ciphertextChar${i}' value='${(ciphertextCharacters[i] === "_") ? "" : ciphertextCharacters[i]}'></td><tr>`;
             }
             document.getElementById("translationTable").innerHTML = dataHTML;
             document.getElementById("translationTable").addEventListener("keyup", updateText);
@@ -27,7 +27,7 @@
             for (let i = 0; i < plaintextCharacters.length; i++) {
                 let newLetter = document.getElementById(`ciphertextChar${i}`).value.toUpperCase();
                 if (newLetter.length === 1 && newLetter.match(/[A-Z]/)) ciphertextCharacters[i] = newLetter;
-                if (newLetter.length === 0) ciphertextCharacters[i] = "-";
+                if (newLetter.length === 0) ciphertextCharacters[i] = "_";
             }
             for (let i = 0; i < plaintextCharacters.length; i++) {
                 let oldLetter = oldCipherText[i];
@@ -38,8 +38,8 @@
                         // Check if new letter exists somewhere else in OLD one
                         if (oldCipherText.includes(currentLetter)) {
                             // It is in old one
-                            ciphertextCharacters[oldCipherText.indexOf(currentLetter)] = "-";
-                            oldCipherText[oldCipherText.indexOf(currentLetter)] = "-";
+                            ciphertextCharacters[oldCipherText.indexOf(currentLetter)] = "_";
+                            oldCipherText[oldCipherText.indexOf(currentLetter)] = "_";
                         }
                     }
                 }
@@ -57,8 +57,10 @@
             document.getElementById("outputMessage").innerHTML = "Plaintext output: "; //resets outputMessage
             ciphertextMessage = document.getElementById("inputMessage").value.toUpperCase(); //gets the ciphertext from the input box with id inputMessage
             for (let i = 0; i < ciphertextMessage.length; i++) {
-                if (ciphertextMessage !== "") { //ensures nothing has been entered
-                    if (ciphertextMessage.charAt(i).match(/[A-Z]/)){ //when the character is a letter which needs to be changed
+                if (ciphertextMessage !== "") { //ensures something has been entered
+                    if (ciphertextMessage.charAt(i).match(/[A-Z]/) && ciphertextCharacters.indexOf(ciphertextMessage.charAt(i)) === -1) { //ensures the considered character is in the ciphertextCharacters array
+                        plaintextMessage = plaintextMessage + "_";
+                    } else if (ciphertextMessage.charAt(i).match(/[A-Z]/)){
                         plaintextMessage = plaintextMessage + plaintextCharacters[ciphertextCharacters.indexOf(ciphertextMessage.charAt(i))]; //inputs the plaintext equivalent character
                     } else { //when the character is punctuation/space/number etc which don't need to be changed
                         plaintextMessage = plaintextMessage + ciphertextMessage.charAt(i);
@@ -210,130 +212,172 @@
     <div class ="messages" id="outputMessage">Plaintext output: </div>
 </div>
 
-<!-- letter frequency tables-->
-<div class="letterFrequency" id="englishFreq"> <!--encloses all divs-->
-    <div class="letterSource"> <!--encloses normal English DIVs-->
-        <div class="heading" id="caption1">English</div>
-        <div class="heading">
-            <div class="values">Letter</div>
-            <div class="values">E</div>
-            <div class="values">T</div>
-            <div class="values">A</div>
-            <div class="values">O</div>
-            <div class="values">I</div>
-            <div class="values">N</div>
-            <div class="values">S</div>
-            <div class="values">R</div>
-            <div class="values">H</div>
-            <div class="values">D</div>
-            <div class="values">L</div>
-            <div class="values">U</div>
-            <div class="values">C</div>
-            <div class="values">M</div>
-            <div class="values">F</div>
-            <div class="values">Y</div>
-            <div class="values">W</div>
-            <div class="values">G</div>
-            <div class="values">P</div>
-            <div class="values">B</div>
-            <div class="values">V</div>
-            <div class="values">K</div>
-            <div class="values">X</div>
-            <div class="values">Q</div>
-            <div class="values">J</div>
-            <div class="values">Z</div>
-        </div>
-        <div class="heading">
-            <div class="values">Frequency</div>
-            <div class="values">12.02</div>
-            <div class="values">9.10</div>
-            <div class="values">8.12</div>
-            <div class="values">7.68</div>
-            <div class="values">7.31</div>
-            <div class="values">6.95</div>
-            <div class="values">6.28</div>
-            <div class="values">6.02</div>
-            <div class="values">5.92</div>
-            <div class="values">4.32</div>
-            <div class="values">3.98</div>
-            <div class="values">2.88</div>
-            <div class="values">2.71</div>
-            <div class="values">2.61</div>
-            <div class="values">2.30</div>
-            <div class="values">2.11</div>
-            <div class="values">2.09</div>
-            <div class="values">2.03</div>
-            <div class="values">1.82</div>
-            <div class="values">1.49</div>
-            <div class="values">1.11</div>
-            <div class="values">0.69</div>
-            <div class="values">0.17</div>
-            <div class="values">0.11</div>
-            <div class="values">0.10</div>
-            <div class="values">0.07</div>
-        </div>
-    </div>
-    <div class="letterSource" id="userFreq"> <!--encloses user input DIVs-->
-        <div class="heading" id="caption2">Message</div>
-        <div class="heading">
-            <div class="values">Letter</div>
-            <div class="values" id="letter0">A</div>
-            <div class="values" id="letter1">B</div>
-            <div class="values" id="letter2">C</div>
-            <div class="values" id="letter3">D</div>
-            <div class="values" id="letter4">E</div>
-            <div class="values" id="letter5">F</div>
-            <div class="values" id="letter6">G</div>
-            <div class="values" id="letter7">H</div>
-            <div class="values" id="letter8">I</div>
-            <div class="values" id="letter9">J</div>
-            <div class="values" id="letter10">K</div>
-            <div class="values" id="letter11">L</div>
-            <div class="values" id="letter12">M</div>
-            <div class="values" id="letter13">N</div>
-            <div class="values" id="letter14">O</div>
-            <div class="values" id="letter15">P</div>
-            <div class="values" id="letter16">Q</div>
-            <div class="values" id="letter17">R</div>
-            <div class="values" id="letter18">S</div>
-            <div class="values" id="letter19">T</div>
-            <div class="values" id="letter20">U</div>
-            <div class="values" id="letter21">V</div>
-            <div class="values" id="letter22">W</div>
-            <div class="values" id="letter23">X</div>
-            <div class="values" id="letter24">Y</div>
-            <div class="values" id="letter25">Z</div>
-        </div>
-        <div class="heading">
-            <div class="values">Frequency</div>
-            <div class="values" id="frequency0">0.00</div>
-            <div class="values" id="frequency1">0.00</div>
-            <div class="values" id="frequency2">0.00</div>
-            <div class="values" id="frequency3">0.00</div>
-            <div class="values" id="frequency4">0.00</div>
-            <div class="values" id="frequency5">0.00</div>
-            <div class="values" id="frequency6">0.00</div>
-            <div class="values" id="frequency7">0.00</div>
-            <div class="values" id="frequency8">0.00</div>
-            <div class="values" id="frequency9">0.00</div>
-            <div class="values" id="frequency10">0.00</div>
-            <div class="values" id="frequency11">0.00</div>
-            <div class="values" id="frequency12">0.00</div>
-            <div class="values" id="frequency13">0.00</div>
-            <div class="values" id="frequency14">0.00</div>
-            <div class="values" id="frequency15">0.00</div>
-            <div class="values" id="frequency16">0.00</div>
-            <div class="values" id="frequency17">0.00</div>
-            <div class="values" id="frequency18">0.00</div>
-            <div class="values" id="frequency19">0.00</div>
-            <div class="values" id="frequency20">0.00</div>
-            <div class="values" id="frequency21">0.00</div>
-            <div class="values" id="frequency22">0.00</div>
-            <div class="values" id="frequency23">0.00</div>
-            <div class="values" id="frequency24">0.00</div>
-            <div class="values" id="frequency25">0.00</div>
-        </div>
-    </div>
-</div>
-</body>
-</html>
+<!-- letter frequency table-->
+<table>
+    <tr>
+        <th colspan="2">English</th>
+        <th colspan="2">Ciphertext</th>
+    </tr>
+    <tr>
+        <th>Letter</th>
+        <th>Frequency</th>
+        <th>Letter</th>
+        <th>Frequency</th>
+    </tr>
+    <tr>
+        <td>E</td>
+        <td>12.02</td>
+        <td id="letter0"></td>
+        <td id="frequency0"></td>
+    </tr>
+    <tr>
+        <td>T</td>
+        <td>9.10</td>
+        <td id="letter1"></td>
+        <td id="frequency1"></td>
+    </tr>
+    <tr>
+        <td>A</td>
+        <td>8.12</td>
+        <td id="letter2"></td>
+        <td id="frequency2"></td>
+    </tr>
+    <tr>
+        <td>O</td>
+        <td>7.68</td>
+        <td id="letter3"></td>
+        <td id="frequency3"></td>
+    </tr>
+    <tr>
+        <td>I</td>
+        <td>7.31</td>
+        <td id="letter4"></td>
+        <td id="frequency4"></td>
+    </tr>
+    <tr>
+        <td>N</td>
+        <td>6.95</td>
+        <td id="letter5"></td>
+        <td id="frequency5"></td>
+    </tr>
+    <tr>
+        <td>S</td>
+        <td>6.28</td>
+        <td id="letter6"></td>
+        <td id="frequency6"></td>
+    </tr>
+    <tr>
+        <td>R</td>
+        <td>6.02</td>
+        <td id="letter7"></td>
+        <td id="frequency7"></td>
+    </tr>
+    <tr>
+        <td>H</td>
+        <td>5.92</td>
+        <td id="letter8"></td>
+        <td id="frequency8"></td>
+    </tr>
+    <tr>
+        <td>D</td>
+        <td>4.32</td>
+        <td id="letter9"></td>
+        <td id="frequency9"></td>
+    </tr>
+    <tr>
+        <td>L</td>
+        <td>3.98</td>
+        <td id="letter10"></td>
+        <td id="frequency10"></td>
+    </tr>
+    <tr>
+        <td>U</td>
+        <td>2.88</td>
+        <td id="letter11"></td>
+        <td id="frequency11"></td>
+    </tr>
+    <tr>
+        <td>C</td>
+        <td>2.71</td>
+        <td id="letter12"></td>
+        <td id="frequency12"></td>
+    </tr>
+    <tr>
+        <td>M</td>
+        <td>2.61</td>
+        <td id="letter13"></td>
+        <td id="frequency13"></td>
+    </tr>
+    <tr>
+        <td>F</td>
+        <td>2.30</td>
+        <td id="letter14"></td>
+        <td id="frequency14"></td>
+    </tr>
+    <tr>
+        <td>Y</td>
+        <td>2.11</td>
+        <td id="letter15"></td>
+        <td id="frequency15"></td>
+    </tr>
+    <tr>
+        <td>W</td>
+        <td>2.09</td>
+        <td id="letter16"></td>
+        <td id="frequency16"></td>
+    </tr>
+    <tr>
+        <td>G</td>
+        <td>2.03</td>
+        <td id="letter17"></td>
+        <td id="frequency17"></td>
+    </tr>
+    <tr>
+        <td>P</td>
+        <td>1.82</td>
+        <td id="letter18"></td>
+        <td id="frequency18"></td>
+    </tr>
+    <tr>
+        <td>B</td>
+        <td>1.49</td>
+        <td id="letter19"></td>
+        <td id="frequency19"></td>
+    </tr>
+    <tr>
+        <td>V</td>
+        <td>1.11</td>
+        <td id="letter20"></td>
+        <td id="frequency20"></td>
+    </tr>
+    <tr>
+        <td>K</td>
+        <td>0.69</td>
+        <td id="letter21"></td>
+        <td id="frequency21"></td>
+    </tr>
+    <tr>
+        <td>X</td>
+        <td>0.17</td>
+        <td id="letter22"></td>
+        <td id="frequency22"></td>
+    </tr>
+    <tr>
+        <td>Q</td>
+        <td>0.11</td>
+        <td id="letter23"></td>
+        <td id="frequency23"></td>
+    </tr>
+    <tr>
+        <td>J</td>
+        <td>0.10</td>
+        <td id="letter24"></td>
+        <td id="frequency24"></td>
+    </tr>
+    <tr>
+        <td>Z</td>
+        <td>0.07</td>
+        <td id="letter25"></td>
+        <td id="frequency25"></td>
+    </tr>
+</table>

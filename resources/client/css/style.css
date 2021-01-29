@@ -1,59 +1,310 @@
+/*css for all */
+* {
+    font-family: 'Raleway', sans-serif;
+}
+
+/*css for buttons */
+button {
+    margin: 10px;
+}
+
 /* css for homepage */
 
 
 /* css for navigation bar */
+#title {
+    font-size: 30px;
+    color: black;
+    font-weight: 400;
+    text-transform: uppercase;
+}
 
+nav {
+    margin: 10px;
+    background: #f9f9f9;
+}
+nav .menuItems {
+    list-style: none;
+    display: flex;
+}
+nav .menuItems li {
+    margin: 50px;
+}
+nav .menuItems li a {
+    text-decoration: none;
+    color: #8f8f8f;
+    font-size: 26px;
+    font-weight: 400;
+    transition: all 0.5s ease-in-out;
+    position: relative;
+    text-transform: uppercase;
+}
+nav .menuItems li a::before {
+    content: attr(data-item);
+    transition: 0.5s;
+    color: #303ee1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 0;
+    overflow: hidden;
+}
+nav .menuItems li a:hover::before {
+    width: 100%;
+    transition: all 0.5s ease-in-out;
+}
 
 /* css for basicTool.html */
+.toolContents {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+}
+
+td, th {
+    border: 1px solid #999;
+    padding: 0.5rem;
+    text-align: center;
+    vertical-align: middle;
+    width: 1px;
+    white-space: nowrap;
+}
+
+table {
+    border-collapse: collapse;
+}
 
 /* translation table, id = translationTable */
 #translationTable {
-    width: 25%;
+    table-layout: fixed;
     height: 100%;
     float: left;
+    padding: 10px;
+    margin: 0px 20px 20px 20px;
+    background-color: white;
+}
+
+.ciphertextInput {
+    display:table-cell;
+    width: 100%;
+    font-size: 15px;
+    text-align: center;
+    border-color: white;
+}
+
+input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* message display areas, class = middlePane */
 .middlePane {
-    width: 50%;
     height: 100%;
     float: left;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+    overflow: auto;
+    flex-grow: 0.95;
+    max-width: 60%;
+    background-color: white;
 }
 
 /* ciphertext input, class = messages, id = inputMessage */
+.messages {
+    padding: 5px;
+    margin: 5px;
+}
+
+#inputMessage {
+    margin-top: 5px;
+}
 
 /* display area, id = displayLetters */
+#displayLetters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.word {
+    display: flex;
+    margin: 10px 20px;
+}
+
+.letter {
+    display: flex;
+    flex-direction: column;
+    font-size: 22px;
+}
+
+.letter > div {
+    padding: 5px 10px;
+    margin: 0 2px;
+    background: #bcdef5; /* find good colour */
+    color: black;
+}
+
+@media (max-width: 500px) {
+    .letter {
+        font-size: 15px;
+        padding: 2px 3px;
+    }
+}
 
 /* plaintext output, class = messages, id = outputMessage */
 
 /* letter frequency tables */
-.letterFrequency {
-    width: 25%;
-    height: 100%;
-    position: relative;
-    float: right;
-
-    display: flex;
-    flex-wrap: wrap;
+#letterFrequency {
+    background-color: white;
 }
 
-.letterSource {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    margin: 10px 20px;
+/* info card */
+#infoCard {
+    background-color: white;
+    margin: 20px;
+    padding: 5px 15px 5px 15px;
 }
-
-.heading {
-    flex-direction: column;
-    flex-wrap: wrap;
-}
-
-.values {
-    flex-direction: column;
-    flex-wrap: wrap;
-}
-
 
 /* css for challenges.html */
 
+/* css for scroll function */
+body, html {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    width: 100%;
+    position: fixed; /* header doesn't scroll */
+    z-index: 1;
+    margin: 0;
+    background-color: white;
+    color: black;
+}
+
+.header p {
+    text-align: center;
+}
+
+.content {
+    width: 100%;
+    height: 800px;
+    margin: 0;
+    top: 100%;
+    background-color: #eee;
+    z-index: 2;
+    position: relative; /* content does scroll */
+    font-size: 50px;
+    color: black;
+
+    display: flex; /* using flex to put in difficulty columns */
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.content p {
+    text-align: center;
+}
+
+#scrollTitle {
+    font-size: 100px;
+}
+
+#scrollText {
+    font-size: 30px;
+    line-height: 150%;
+}
+
+/* css for challenge columns */
+.column {
+    display:flex;
+    flex-direction: column; /* display as columns */
+    flex-basis: 100%;
+    flex: 1;
+    margin: 20px;
+    padding: 10px;
+}
+
+.column p {
+    background-color: white;
+    padding: 15px 5px 15px 5px;
+}
+
+.challengeBox {
+    display: flex; /* using flex to format challenges */
+    flex-direction: row;
+    background-color: white;
+    padding: 15px 5px 15px 5px;
+    margin: 5px;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.challengeId {
+    margin-left: 20px;
+    justify-content: center;
+    width: 100px;
+}
+
+.levelButton {
+    font-size: 25px;
+    justify-content: center;
+}
+
+#levelHeader{
+    font-size: 100px;
+    margin: 20px 20px 10px 20px;
+    padding: 10px;
+}
+
+#levelContent, .level input[type="text"]{
+    font-size: 20px;
+}
+
+.level, #challengeComplete {
+    margin: 20px;
+    padding: 10px;
+}
+
+.level button {
+    margin-left: 0;
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+.level button, div, p {
+    margin-bottom: 10px;
+}
+
+.levelTitle, #challengeComplete {
+    font-size: 30px;
+}
+
+.levelTitle {
+    margin-top: 0;
+    color: #303ee1;
+}
+
+#challengeComplete hr {
+    border: 0;
+    height: 3px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+#challengeComplete a {
+    display: inline-block;
+    padding-top: 50px;
+    color: #303ee1;
+}
+
+#challengeComplete p {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
